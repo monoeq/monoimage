@@ -112,3 +112,4 @@ var element = myimage(imagedata, {
 
 - [jongacnik/monolazy](https://github.com/jongacnik/monolazy)
 - [choojs/nanocomponent](https://github.com/choojs/nanocomponent)
+- [jondashkyle/nanopage](https://github.com/jondashkyle/nanopage)
