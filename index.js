@@ -43,21 +43,39 @@ module.exports = class MonoImage extends MonoLazy {
     
     this.image = image
     this.sizes = Object.keys(this.image.sizes).map(s => parseInt(s))
-    
-    return html`
+
+    // not loaded
+    if (!this.loaded) {
+      return html`
       <div style="
-        background-size:cover;
-        background-position:center;
-        background-repeat:no-repeat;
         ${opts.fill
           ? `width:100%;height:100%;`
           : `padding-top:${image.dimensions.ratio}%;`
         }
-        ${this.loaded 
-          ? `background-image:url(${this.loaded});` 
-          : ''
-        }
       "></div>
-    `
+      `
+    // loaded and image
+    } else if (this.loaded && opts.background === false) {
+      return html`<div><img src="${this.loaded}"></div>`
+    //  loaded and background
+    } else {
+      return html`
+        <div style="
+          ${opts.fill
+            ? `width:100%;height:100%;`
+            : `padding-top:${image.dimensions.ratio}%;`
+          }
+          ${this.loaded
+            ? `
+              background-image:url(${this.loaded});
+              background-size:cover;
+              background-position:center;
+              background-repeat:no-repeat;
+            ` 
+            : ''
+          }
+        "></div>
+      `
+    }
   }
 }
