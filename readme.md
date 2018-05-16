@@ -100,6 +100,20 @@ var element = myimage(imagedata, {
 "></div>
 ```
 
+---
+
+Prefer an `img` tag to a `div`? Places the `img` in a `div` to preserve semantic structure.
+
+```js
+var element = myimage(imagedata, {
+  background: false
+})
+```
+
+```html
+<div><img src="image.jpg"></div>
+```
+
 ## Todo
 
 - [ ] Asserts
