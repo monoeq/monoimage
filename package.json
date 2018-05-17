@@ -11,10 +11,15 @@
   "license": "MIT",
   "dependencies": {
     "closest-number": "^1.0.2",
+    "inline-style": "^2.0.0",
+    "is-obj": "^1.0.1",
+    "just-clone": "^3.0.0",
     "monolazy": "0.0.0",
+    "nanoassert": "^1.1.0",
     "nanohtml": "^1.2.4"
   },
   "devDependencies": {
-    "budo": "^11.2.0"
+    "budo": "^11.2.0",
+    "intersection-observer": "^0.5.0"
   }
 }
