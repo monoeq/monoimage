@@ -1,6 +1,10 @@
+var assert = require('nanoassert')
 var html = require('nanohtml')
 var MonoLazy = require('monolazy')
+var isObj = require('is-obj')
+var clone = require('just-clone')
 var closest = require('closest-number')
+var inlineStyle = require('inline-style')
 
 module.exports = class MonoImage extends MonoLazy {
   constructor() {
@@ -38,26 +42,35 @@ module.exports = class MonoImage extends MonoLazy {
     return true
   }
 
-  createElement (image, opts) {
-    opts = opts || {}
-    
+  createElement (image, attributes) {
     this.image = image
     this.sizes = Object.keys(this.image.sizes).map(s => parseInt(s))
+
+    // custom attributes
+    attributes = typeof attributes === 'function'
+      ? attributes(this.loaded)
+      : isObj(attributes)
+      ? clone(attributes)
+      : {}
+
+    assert(isObj(attributes), `attributes function must return an Object`)
+
+    // ensure style property exists
+    if (typeof attributes.style !== 'object') attributes.style = {}
+
+    // default styles
+    if (!attributes.style.display) attributes.style.display = 'block'
+    if (!attributes.style.width) attributes.style.width = '100%'
+    if (!attributes.style.height && !this.loaded) {
+      attributes.style.paddingTop = image.dimensions.ratio + '%'
+    }
     
-    return html`
-      <div style="
-        background-size:cover;
-        background-position:center;
-        background-repeat:no-repeat;
-        ${opts.fill
-          ? `width:100%;height:100%;`
-          : `padding-top:${image.dimensions.ratio}%;`
-        }
-        ${this.loaded 
-          ? `background-image:url(${this.loaded});` 
-          : ''
-        }
-      "></div>
-    `
+    // convert to inline styles
+    attributes.style = inlineStyle(attributes.style)
+
+    // set src
+    if (this.loaded) attributes.src = this.loaded
+
+    return html`<img ${attributes}>`
   }
 }
