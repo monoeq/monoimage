@@ -1,3 +1,4 @@
+var assert = require('nanoassert')
 var html = require('nanohtml')
 var MonoLazy = require('monolazy')
 var closest = require('closest-number')
@@ -40,24 +41,25 @@ module.exports = class MonoImage extends MonoLazy {
 
   createElement (image, opts) {
     opts = opts || {}
-    
+
     this.image = image
     this.sizes = Object.keys(this.image.sizes).map(s => parseInt(s))
+
+    var element = typeof opts.element === 'function'
+      ? opts.element(this.loaded)
+      : html`<img>`
+
+    if (typeof window !== 'undefined') {
+      assert(element instanceof Element, 'opts.element should return a dom node')
+
+      var isImg = element.tagName.toLowerCase() === 'img'
+      if (!element.style.width) element.style.width = '100%'
+      if (!element.style.display) element.style.display = 'block'
+      if (!element.style.height && (!this.loaded || !isImg)) element.style.paddingTop = image.dimensions.ratio + '%'
+      if (this.loaded && isImg) element.src = this.loaded
+      if (this.loaded && !isImg) element.style.backgroundImage = `url(${this.loaded})`
+    }
     
-    return html`
-      <div style="
-        background-size:cover;
-        background-position:center;
-        background-repeat:no-repeat;
-        ${opts.fill
-          ? `width:100%;height:100%;`
-          : `padding-top:${image.dimensions.ratio}%;`
-        }
-        ${this.loaded 
-          ? `background-image:url(${this.loaded});` 
-          : ''
-        }
-      "></div>
-    `
+    return element
   }
 }

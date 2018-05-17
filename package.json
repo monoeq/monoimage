@@ -12,6 +12,7 @@
   "dependencies": {
     "closest-number": "^1.0.2",
     "monolazy": "0.0.0",
+    "nanoassert": "^1.1.0",
     "nanohtml": "^1.2.4"
   },
   "devDependencies": {
