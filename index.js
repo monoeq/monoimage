@@ -58,6 +58,21 @@ module.exports = class MonoImage extends MonoLazy {
       if (!element.style.height && (!this.loaded || !isImg)) element.style.paddingTop = image.dimensions.ratio + '%'
       if (this.loaded && isImg) element.src = this.loaded
       if (this.loaded && !isImg) element.style.backgroundImage = `url(${this.loaded})`
+    } else {
+      // SSR
+      var matchStyles = /style="([^"]*)"/i
+      if (matchStyles.test(element)) {
+        element = element.replace(matchStyles, (match, styles) => {
+          if (styles.indexOf('width') < 0) styles += ';width:100%'
+          if (styles.indexOf('display') < 0) styles += ';display:block'
+          if (styles.indexOf('height') < 0) styles += `;padding-top:${image.dimensions.ratio}%`
+          return `style="${styles}"`
+        })  
+      } else {
+        element = element.replace(/(<\w+)\s*/i, `$1 style="width:100%;display:block;padding-top:${image.dimensions.ratio}%" `)
+      }
+      element = new String(element)
+      element.__encoded = true
     }
     
     return element
