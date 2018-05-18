@@ -39,42 +39,39 @@ module.exports = class MonoImage extends MonoLazy {
     return true
   }
 
+  browser () {
+    assert(this._monoEl instanceof Element, 'opts.element should return a dom node')
+    this._monoEl.style.width = '100%'
+    this._monoEl.style.display = 'block'
+    var isImage = this._monoEl.tagName.toLowerCase() === 'img'
+    if (!this.loaded || !isImage) this._monoEl.style.paddingTop = this.image.dimensions.ratio + '%'
+    if (this.loaded && isImage) this._monoEl.src = this.loaded
+    if (this.loaded && !isImage) this._monoEl.style.backgroundImage = `url(${this.loaded})`
+  }
+
+  server () {
+    var styles = `padding-top:${this.image.dimensions.ratio}%;width:100%;display:block;`
+    this._monoEl = this._monoEl.indexOf('style="') >= 0
+      ? this._monoEl.replace('style="', `style="${styles}`)
+      : this._monoEl.replace(/(<\w+)\s*/i, `$1 style="${styles}" `)
+    this._monoEl = new String(this._monoEl)
+    this._monoEl.__encoded = true
+  }
+
   createElement (image, opts) {
     opts = opts || {}
 
     this.image = image
     this.sizes = Object.keys(this.image.sizes).map(s => parseInt(s))
 
-    var element = typeof opts.element === 'function'
+    this._monoEl = typeof opts.element === 'function'
       ? opts.element(this.loaded)
       : html`<img>`
 
-    if (typeof window !== 'undefined') {
-      assert(element instanceof Element, 'opts.element should return a dom node')
-
-      var isImg = element.tagName.toLowerCase() === 'img'
-      if (!element.style.width) element.style.width = '100%'
-      if (!element.style.display) element.style.display = 'block'
-      if (!element.style.height && (!this.loaded || !isImg)) element.style.paddingTop = image.dimensions.ratio + '%'
-      if (this.loaded && isImg) element.src = this.loaded
-      if (this.loaded && !isImg) element.style.backgroundImage = `url(${this.loaded})`
-    } else {
-      // SSR
-      var matchStyles = /style="([^"]*)"/i
-      if (matchStyles.test(element)) {
-        element = element.replace(matchStyles, (match, styles) => {
-          if (styles.indexOf('width') < 0) styles += ';width:100%'
-          if (styles.indexOf('display') < 0) styles += ';display:block'
-          if (styles.indexOf('height') < 0) styles += `;padding-top:${image.dimensions.ratio}%`
-          return `style="${styles}"`
-        })  
-      } else {
-        element = element.replace(/(<\w+)\s*/i, `$1 style="width:100%;display:block;padding-top:${image.dimensions.ratio}%" `)
-      }
-      element = new String(element)
-      element.__encoded = true
-    }
+    typeof window !== 'undefined'
+      ? this.browser()
+      : this.server()
     
-    return element
+    return this._monoEl
   }
 }
