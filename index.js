@@ -1,3 +1,4 @@
+var assert = require('nanoassert')
 var html = require('nanohtml')
 var MonoLazy = require('monolazy')
 var closest = require('closest-number')
@@ -38,26 +39,39 @@ module.exports = class MonoImage extends MonoLazy {
     return true
   }
 
+  browser () {
+    assert(this._monoEl instanceof Element, 'opts.element should return a dom node')
+    this._monoEl.style.width = '100%'
+    this._monoEl.style.display = 'block'
+    var isImage = this._monoEl.tagName.toLowerCase() === 'img'
+    if (!this.loaded || !isImage) this._monoEl.style.paddingTop = this.image.dimensions.ratio + '%'
+    if (this.loaded && isImage) this._monoEl.src = this.loaded
+    if (this.loaded && !isImage) this._monoEl.style.backgroundImage = `url(${this.loaded})`
+  }
+
+  server () {
+    var styles = `padding-top:${this.image.dimensions.ratio}%;width:100%;display:block;`
+    this._monoEl = this._monoEl.indexOf('style="') >= 0
+      ? this._monoEl.replace('style="', `style="${styles}`)
+      : this._monoEl.replace(/(<\w+)\s*/i, `$1 style="${styles}" `)
+    this._monoEl = new String(this._monoEl)
+    this._monoEl.__encoded = true
+  }
+
   createElement (image, opts) {
     opts = opts || {}
-    
+
     this.image = image
     this.sizes = Object.keys(this.image.sizes).map(s => parseInt(s))
+
+    this._monoEl = typeof opts.element === 'function'
+      ? opts.element(this.loaded)
+      : html`<img>`
+
+    typeof window !== 'undefined'
+      ? this.browser()
+      : this.server()
     
-    return html`
-      <div style="
-        background-size:cover;
-        background-position:center;
-        background-repeat:no-repeat;
-        ${opts.fill
-          ? `width:100%;height:100%;`
-          : `padding-top:${image.dimensions.ratio}%;`
-        }
-        ${this.loaded 
-          ? `background-image:url(${this.loaded});` 
-          : ''
-        }
-      "></div>
-    `
+    return this._monoEl
   }
 }
