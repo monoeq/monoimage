@@ -1,6 +1,6 @@
 {
   "name": "monoimage",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "monoimage",
   "main": "index.js",
   "scripts": {
