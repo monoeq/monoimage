@@ -63,48 +63,59 @@ function view (state, emit) {
 
 ---
 
-`monoimage` by default returns an intrinsic ratio `div` element:
+`monoimage` by default outputs an image element
 
 ```js
-var element = myimage(imagedata)
+var element = myimage.render(imagedata)
 ```
 
 ```html
-<div style="
-  padding-top: 75%;
-  background-image: image.jpg;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-"></div>
+<img src="image.jpg" class="monoimage monoimage-loaded" style="width:100%;display:block;">
 ```
 
 ---
 
-Optionally return a _filled_ `div` element:
+`monoimage` has a couple options:
 
 ```js
-var element = myimage(imagedata, {
-  fill: true
+// defaults
+var element = myimage.render(imagedata, {
+  background: false,
+  inline: false,
+  fill: false
 })
 ```
 
+**`background`**: `false|true|'contain'`
+- `false`: (default), img element 
+- `true`: div element, `background-image`, `background-size:cover`
+- `'contain'`: div element, `background-image`, `background-size:contain`
+
+**`inline`**: `false|true`
+- `false`: (default), `display:block`
+- `true`: `display:inline-block`
+
+**`fill`**: `false|true`
+- `false`: (default), aspect ratio preserved using `padding-top`
+- `true`: `height:100%`
+
+---
+
+`monoimage` applies classes for load state. useful for fade-in.
+
 ```html
-<div style="
-  width: 100%;
-  height: 100%;
-  background-image: image.jpg;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-"></div>
+<!-- loading -->
+<img class="monoimage">
+
+<!-- loaded -->
+<img class="monoimage monoimage-loaded">
 ```
 
 ## Todo
 
+- [ ] Loaded callback
+- [ ] Continue exploring `element` option ([#5](https://github.com/jongacnik/monoimage/pull/5))
 - [ ] Asserts
-- [ ] Pass styles
-- [ ] Pass classnames
 - [ ] Pixel Ratio option
 - [ ] Better docs
 

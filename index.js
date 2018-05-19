@@ -43,21 +43,39 @@ module.exports = class MonoImage extends MonoLazy {
     
     this.image = image
     this.sizes = Object.keys(this.image.sizes).map(s => parseInt(s))
-    
-    return html`
-      <div style="
-        background-size:cover;
+
+    var attributes = {
+      class: `monoimage${this.loaded ? ' monoimage-loaded' : ''}`
+    }
+
+    var styles = `
+      width:100%;
+      display:${opts.inline ? 'inline-block' : 'block'};
+    `
+
+    if (opts.background) {
+      styles += `
         background-position:center;
         background-repeat:no-repeat;
-        ${opts.fill
-          ? `width:100%;height:100%;`
-          : `padding-top:${image.dimensions.ratio}%;`
-        }
-        ${this.loaded 
-          ? `background-image:url(${this.loaded});` 
-          : ''
-        }
-      "></div>
-    `
+        background-size:${opts.background === 'contain' ? 'contain' : 'cover'};
+        ${this.loaded ? `background-image:url(${this.loaded});` : ''}
+      `
+    } else {
+      attributes.src = this.loaded
+        ? this.loaded
+        : 'data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='
+    }
+
+    if (opts.fill) {
+      styles += 'height:100%;'
+    } else if (!this.loaded || opts.background) {
+      styles += `padding-top:${image.dimensions.ratio}%;`
+    }
+
+    attributes.style = styles.replace((/  |\r\n|\n|\r/gm),"")
+
+    return opts.background
+      ? html`<div ${attributes}></div>`
+      : html`<img ${attributes}>`
   }
 }
