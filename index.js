@@ -61,9 +61,9 @@ module.exports = class MonoImage extends MonoLazy {
         ${this.loaded ? `background-image:url(${this.loaded});` : ''}
       `
     } else {
-      attributes.src = this.loaded
-        ? this.loaded
-        : 'data:image/gif;base64,R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='
+      if (this.loaded) {
+        attributes.src = this.loaded  
+      }
     }
 
     if (opts.fill) {
