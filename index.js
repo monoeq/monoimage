@@ -32,6 +32,11 @@ module.exports = class MonoImage extends MonoLazy {
 
     this.loaded = this._src
     this.rerender()
+    this.handleCallback(this.element)
+  }
+
+  handleCallback () {
+    // noop
   }
 
   update () {
@@ -43,6 +48,7 @@ module.exports = class MonoImage extends MonoLazy {
     
     this.image = image
     this.sizes = Object.keys(this.image.sizes).map(s => parseInt(s))
+    if (typeof image.onload === 'function') this.handleCallback = image.onload
 
     var attributes = {
       class: `monoimage${this.loaded ? ' monoimage-loaded' : ''}`
