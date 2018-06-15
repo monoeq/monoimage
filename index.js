@@ -48,7 +48,7 @@ module.exports = class MonoImage extends MonoLazy {
     
     this.image = image
     this.sizes = Object.keys(this.image.sizes).map(s => parseInt(s))
-    if (typeof image.onload === 'function') this.handleCallback = image.onload
+    if (typeof opts.onload === 'function') this.handleCallback = opts.onload
 
     var attributes = {
       class: `monoimage${this.loaded ? ' monoimage-loaded' : ''}`
