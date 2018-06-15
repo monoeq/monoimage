@@ -81,6 +81,7 @@ var element = myimage.render(imagedata)
 // defaults
 var element = myimage.render(imagedata, {
   background: false,
+  onload: el => { },
   inline: false,
   fill: false
 })
@@ -90,6 +91,10 @@ var element = myimage.render(imagedata, {
 - `false`: (default), img element 
 - `true`: div element, `background-image`, `background-size:cover`
 - `'contain'`: div element, `background-image`, `background-size:contain`
+
+**`onload`**: `undefined`|`function'`
+- `undefined`: (default)
+- `function`: argument is element
 
 **`inline`**: `false|true`
 - `false`: (default), `display:block`
