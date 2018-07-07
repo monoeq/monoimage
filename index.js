@@ -3,8 +3,10 @@ var MonoLazy = require('monolazy')
 var closest = require('closest-number')
 
 module.exports = class MonoImage extends MonoLazy {
-  constructor() {
-    super()
+  constructor(id, state, emit) {
+    super(`MonoImage-${id}`)
+    state = state || {components:{}}
+    this.local = state.components[`MonoImage-${id}`] = {}
 
     // limit ratio to 1.5x (full 2x is overkill)
     this.deviceRatio = (typeof window !== 'undefined' && window.devicePixelRatio > 1) ? 1.5 : 1
