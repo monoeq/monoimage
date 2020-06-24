@@ -39,7 +39,7 @@ var element = myimage.render(imagedata)
 
 `monoimage` looks at the dimensions of it's parent to determine which image src to load. Similar to [srcset](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#attr-srcset) but container aware, rather than viewport aware. Device pixel ratio is considered.
 
-The image is loaded only once the component has entered the viewport, using [monolazy](https://github.com/jongacnik/monolazy).
+The image is loaded only once the component has entered the viewport, using [monolazy](https://github.com/monoeq/monolazy).
 
 ---
 
@@ -119,13 +119,13 @@ var element = myimage.render(imagedata, {
 ## Todo
 
 - [ ] Loaded callback
-- [ ] Continue exploring `element` option ([#5](https://github.com/jongacnik/monoimage/pull/5))
+- [ ] Continue exploring `element` option ([#5](https://github.com/monoeq/monoimage/pull/5))
 - [ ] Asserts
 - [ ] Pixel Ratio option
 - [ ] Better docs
 
 ## See Also
 
-- [jongacnik/monolazy](https://github.com/jongacnik/monolazy)
+- [monoeq/monolazy](https://github.com/monoeq/monolazy)
 - [choojs/nanocomponent](https://github.com/choojs/nanocomponent)
 - [jondashkyle/nanopage](https://github.com/jondashkyle/nanopage)
